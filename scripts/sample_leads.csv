@@ -1,0 +1,5 @@
+name,phone,timezone,consent,notes
+Alex Rivera,+18015550101,America/Denver,true,Asked about Thursday onboarding
+Jordan Chen,+18015550102,America/Los_Angeles,true,Warm inbound from website
+Sam Patel,+18015550103,America/New_York,true,Existing customer renewal
+Riley Gomez,+18015550104,America/Chicago,false,Do not dial until consent recorded
