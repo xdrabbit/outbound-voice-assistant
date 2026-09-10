@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outbound Voice Assistant</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">Voice agent + campaign engine</p>
+      <h1>Outbound Call Assistant</h1>
+    </div>
+    <div class="mode {% if stats.dry_run %}dry{% else %}live{% endif %}">
+      {% if stats.dry_run %}DRY RUN{% else %}LIVE{% endif %}
+    </div>
+  </header>
+
+  <section class="stats">
+    <article><span>Leads</span><strong>{{ stats.leads }}</strong></article>
+    <article><span>Ready / retry</span><strong>{{ stats.queued }}</strong></article>
+    <article><span>Booked</span><strong>{{ stats.booked }}</strong></article>
+    <article><span>Calls</span><strong>{{ stats.calls }}</strong></article>
+  </section>
+
+  <section class="grid">
+    <form class="card" action="/campaigns" method="post">
+      <h2>New campaign</h2>
+      <label>Name <input name="name" required placeholder="September outreach" /></label>
+      <label>Agent
+        <select name="agent_key">
+          <option value="qualifier">Lead qualifier</option>
+          <option value="reminder">Appointment reminder</option>
+        </select>
+      </label>
+      <button type="submit">Create campaign</button>
+    </form>
+
+    <form class="card" action="/leads" method="post">
+      <h2>Add lead</h2>
+      <label>Campaign
+        <select name="campaign_id" required>
+          {% for c in campaigns %}
+          <option value="{{ c.id }}">{{ c.name }} · {{ c.agent_key }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Name <input name="name" required /></label>
+      <label>Phone <input name="phone" required placeholder="+18015550123" /></label>
+      <label>Timezone <input name="timezone" value="America/Denver" /></label>
+      <label class="check"><input type="checkbox" name="consent" value="true" checked /> Prior express consent</label>
+      <label>Notes <input name="notes" placeholder="Interested in Thursday demo" /></label>
+      <button type="submit">Queue lead</button>
+    </form>
+
+    <form class="card" action="/leads/csv" method="post" enctype="multipart/form-data">
+      <h2>Import CSV</h2>
+      <p class="hint">Columns: name, phone, timezone, consent, notes</p>
+      <label>Campaign
+        <select name="campaign_id" required>
+          {% for c in campaigns %}
+          <option value="{{ c.id }}">{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <input type="file" name="file" accept=".csv" required />
+      <button type="submit">Import</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <h2>Leads</h2>
+      {% if campaigns %}
+      <form action="/campaigns/{{ campaigns[0].id }}/run" method="post">
+        <button type="submit">Run next batch</button>
+      </form>
+      {% endif %}
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Phone</th><th>Status</th><th>Attempts</th><th>Consent</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lead in leads %}
+        <tr>
+          <td>{{ lead.id }}</td>
+          <td>{{ lead.name }}</td>
+          <td>{{ lead.phone }}</td>
+          <td><span class="pill">{{ lead.status }}</span></td>
+          <td>{{ lead.attempts }}</td>
+          <td>{% if lead.consent %}yes{% else %}no{% endif %}</td>
+          <td>
+            <form action="/calls/dial/{{ lead.id }}" method="post">
+              <button type="submit" class="ghost">Dial</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Recent calls</h2>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Lead</th><th>Status</th><th>Provider</th><th>Summary</th></tr>
+      </thead>
+      <tbody>
+        {% for call in calls %}
+        <tr>
+          <td>{{ call.id }}</td>
+          <td>{{ call.lead_id }}</td>
+          <td>{{ call.status }}</td>
+          <td>{{ call.provider_call_id or ("dry-run" if call.dry_run else "—") }}</td>
+          <td>{{ call.summary }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

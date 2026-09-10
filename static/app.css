@@ -1,0 +1,64 @@
+:root {
+  color-scheme: dark;
+  --bg: #0c1016;
+  --card: #151b24;
+  --line: #273140;
+  --text: #e8eef6;
+  --muted: #93a0b3;
+  --accent: #7dd3c1;
+  --warn: #f3c16b;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto;
+  max-width: 1100px;
+  padding: 32px 20px 80px;
+  font: 15px/1.45 "IBM Plex Sans", "Segoe UI", sans-serif;
+  background: radial-gradient(1200px 500px at 10% -10%, #1a2a28 0%, var(--bg) 45%);
+  color: var(--text);
+}
+header { display: flex; justify-content: space-between; align-items: end; gap: 16px; }
+.eyebrow { color: var(--accent); letter-spacing: .12em; text-transform: uppercase; font-size: 11px; margin: 0 0 6px; }
+h1, h2 { margin: 0 0 12px; font-weight: 600; }
+.mode { border: 1px solid var(--line); padding: 8px 12px; border-radius: 999px; font-size: 12px; letter-spacing: .08em; }
+.mode.dry { color: var(--warn); }
+.mode.live { color: var(--accent); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 28px 0; }
+.stats article, .card {
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+}
+.stats span { color: var(--muted); font-size: 12px; }
+.stats strong { display: block; font-size: 28px; margin-top: 4px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+label { display: block; margin: 10px 0; color: var(--muted); font-size: 13px; }
+input, select, button {
+  width: 100%;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #0e141c;
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+}
+.check { display: flex; align-items: center; gap: 8px; }
+.check input { width: auto; margin: 0; }
+button {
+  background: var(--accent);
+  color: #08221c;
+  font-weight: 650;
+  cursor: pointer;
+  width: auto;
+}
+button.ghost { background: transparent; color: var(--text); }
+.hint { color: var(--muted); font-size: 12px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.pill { background: #22303a; padding: 3px 8px; border-radius: 999px; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+@media (max-width: 900px) {
+  .stats, .grid { grid-template-columns: 1fr; }
+}
